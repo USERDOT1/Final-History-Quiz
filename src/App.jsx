@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
 const QUESTION_POOL = [
   ["Document limiting the power of the king of England in 1215", 1215],
 ["Fall of the Byzantine capital to the Ottoman Empire", 1453],
@@ -127,6 +128,13 @@ function App() {
   const [submitted, setSubmitted] = useState(false);
   const [feedback, setFeedback] = useState("");
 
+  const inputRef = useRef(null);
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [currentIndex, submitted]);
+
   if (currentIndex >= questions.length) {
     const finalContainerStyle = {
       maxWidth: "600px",
@@ -209,6 +217,7 @@ function App() {
     disabled={submitted}
     style={inputStyle}
     autoFocus
+    ref={inputRef}
     />
 
 
