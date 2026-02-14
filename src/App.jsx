@@ -27,26 +27,26 @@ function getRandomQuestions(pool, count) {
   return shuffled.slice(0, count);
 }
 
-function calculateYearsOff(guess, answer, range) {
-  const min = answer - range;
-  const max = answer + range;
-
-  if (guess < min || guess > max) {
-    return range;
-  }
-
-  return Math.abs(guess - answer);
+function calculateYearsOff(guess, answer) {
+  const difference = Math.abs(guess - answer);
+  return Math.min(difference, 100);
 }
+
 
 
 function getDateFeedback(guess, answer) {
-  if (guess === answer) {
-    return "Exact match";
-  }
-
   const difference = Math.abs(guess - answer);
-  return `Correct year: ${answer} (${difference} years off)`;
+  const cappedDifference = Math.min(difference, 100);
+
+  if (cappedDifference === 0) {
+    return "Exact match!";
+  } else if (cappedDifference === 100) {
+    return `Way off! Correct year: ${answer} (100 years off max penalty)`;
+  } else {
+    return `Correct year: ${answer} (${cappedDifference} years off)`;
+  }
 }
+
 
 function App() {
   const [questions] = useState(() => getRandomQuestions(QUESTION_POOL, 10));
@@ -75,8 +75,7 @@ function App() {
 
     const yearsOff = calculateYearsOff(
       yearGuess,
-      currentQuestion[1],
-      currentQuestion[2]
+      currentQuestion[1]
     );
 
     setTotalScore(totalScore + yearsOff);
