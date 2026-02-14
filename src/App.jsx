@@ -1,35 +1,110 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
 
-function App() {
-  const [count, setCount] = useState(0)
+const QUESTION_POOL = [
+  ["Signing of the Magna Carta", 1215, 50],
+["Fall of Constantinople", 1453, 50],
+["Columbus reaches the Americas", 1492, 50],
+["Martin Luther's 95 Theses", 1517, 40],
+["Start of the Thirty Years' War", 1618, 50],
+["English Civil War begins", 1642, 40],
+["American Declaration of Independence", 1776, 30],
+["French Revolution begins", 1789, 30],
+["Battle of Waterloo", 1815, 20],
+["American Civil War begins", 1861, 20],
+["Russian Revolution", 1917, 10],
+["End of World War I", 1918, 10],
+["Treaty of Versailles signed", 1919, 10],
+["Start of World War II", 1939, 10],
+["D-Day invasion", 1944, 5],
+["End of World War II", 1945, 5],
+["Moon landing", 1969, 5],
+["Fall of the Berlin Wall", 1989, 5],
+["September 11 attacks", 2001, 3],
+["COVID-19 declared a pandemic", 2020, 2]
+];
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+function getRandomQuestions(pool, count) {
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count);
 }
 
-export default App
+function calculateScore(guess, answer, range) {
+  const min = answer - range;
+  const max = answer + range;
+
+  if (guess < min || guess > max) {
+    return 0;
+  }
+
+  const distance = Math.abs(guess - answer);
+  const score = 100 * (1 - distance / range);
+
+  return Math.max(0, Math.round(score));
+}
+
+function App() {
+  const [questions] = useState(() => getRandomQuestions(QUESTION_POOL, 10));
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [guess, setGuess] = useState("");
+  const [totalScore, setTotalScore] = useState(0);
+  const [submitted, setSubmitted] = useState(false);
+
+  if (currentIndex >= questions.length) {
+    return (
+      <div>
+      <h1>Quiz Finished</h1>
+      <p>Final Score: {totalScore}</p>
+      </div>
+    );
+  }
+
+  const currentQuestion = questions[currentIndex];
+
+  function handleSubmit() {
+    const yearGuess = parseInt(guess, 10);
+    if (isNaN(yearGuess)) {
+      return;
+    }
+
+    const points = calculateScore(
+      yearGuess,
+      currentQuestion[1],
+      currentQuestion[2]
+    );
+
+    setTotalScore(totalScore + points);
+    setSubmitted(true);
+  }
+
+  function handleNext() {
+    setGuess("");
+    setSubmitted(false);
+    setCurrentIndex(currentIndex + 1);
+  }
+
+  return (
+    <div>
+    <h2>Question {currentIndex + 1} / {questions.length}</h2>
+    <p>{currentQuestion[0]}</p>
+
+    <input
+    type="number"
+    value={guess}
+    onChange={e => setGuess(e.target.value)}
+    disabled={submitted}
+    />
+
+    {!submitted && (
+      <button onClick={handleSubmit}>Submit</button>
+    )}
+
+    {submitted && (
+      <button onClick={handleNext}>Next</button>
+    )}
+
+    <p>Total Score: {totalScore}</p>
+    </div>
+  );
+}
+
+export default App;
