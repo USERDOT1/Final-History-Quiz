@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 const QUESTION_POOL = [
   ["Signing of the Magna Carta", 1215, 50],
 ["Fall of Constantinople", 1453, 50],
@@ -42,12 +41,22 @@ function calculateScore(guess, answer, range) {
   return Math.max(0, Math.round(score));
 }
 
+function getDateFeedback(guess, answer) {
+  if (guess === answer) {
+    return "Exact match";
+  }
+
+  const difference = Math.abs(guess - answer);
+  return `Correct year: ${answer} (${difference} years off)`;
+}
+
 function App() {
   const [questions] = useState(() => getRandomQuestions(QUESTION_POOL, 10));
   const [currentIndex, setCurrentIndex] = useState(0);
   const [guess, setGuess] = useState("");
   const [totalScore, setTotalScore] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [feedback, setFeedback] = useState("");
 
   if (currentIndex >= questions.length) {
     return (
@@ -73,14 +82,18 @@ function App() {
     );
 
     setTotalScore(totalScore + points);
+    setFeedback(getDateFeedback(yearGuess, currentQuestion[1]));
     setSubmitted(true);
   }
 
+
   function handleNext() {
     setGuess("");
+    setFeedback("");
     setSubmitted(false);
     setCurrentIndex(currentIndex + 1);
   }
+
 
   return (
     <div>
@@ -101,7 +114,7 @@ function App() {
     {submitted && (
       <button onClick={handleNext}>Next</button>
     )}
-
+    {submitted && <p>{feedback}</p>}
     <p>Total Score: {totalScore}</p>
     </div>
   );
