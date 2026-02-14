@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
 const QUESTION_POOL = [
-  ["Document limiting the power of the king of England in 1215", 1215],
+  ["Document limiting the power of the king of England", 1215],
 ["Fall of the Byzantine capital to the Ottoman Empire", 1453],
 ["Christopher Columbus reaches the Americas", 1492],
 ["Martin Luther publishes his 95 Theses", 1517],
