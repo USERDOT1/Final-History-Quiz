@@ -153,8 +153,10 @@ function App() {
 
     let message = "Not bad!";
     if (totalScore === 0) message = "Perfect score! Incredible!";
-    else if (totalScore <= 150) message = "Great job!";
-    else if (totalScore <= 250) message = "Good effort!";
+    else if (totalScore <= 100) message = "Insane work!";
+    else if (totalScore <= 250) message = "Great job!";
+    else if (totalScore <= 500) message = "Decent!";
+    else if (totalScore <= 700) message = "Good effort!";
     else message = "Better luck next time!";
 
     return (
@@ -206,7 +208,9 @@ function App() {
     onChange={e => setGuess(e.target.value)}
     disabled={submitted}
     style={inputStyle}
+    autoFocus
     />
+
 
     {!submitted && (
       <button onClick={handleSubmit} style={buttonStyle}>Submit</button>
