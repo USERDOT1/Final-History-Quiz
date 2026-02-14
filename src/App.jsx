@@ -27,19 +27,17 @@ function getRandomQuestions(pool, count) {
   return shuffled.slice(0, count);
 }
 
-function calculateScore(guess, answer, range) {
+function calculateYearsOff(guess, answer, range) {
   const min = answer - range;
   const max = answer + range;
 
   if (guess < min || guess > max) {
-    return 0;
+    return range;
   }
 
-  const distance = Math.abs(guess - answer);
-  const score = 100 * (1 - distance / range);
-
-  return Math.max(0, Math.round(score));
+  return Math.abs(guess - answer);
 }
+
 
 function getDateFeedback(guess, answer) {
   if (guess === answer) {
@@ -75,13 +73,14 @@ function App() {
       return;
     }
 
-    const points = calculateScore(
+    const yearsOff = calculateYearsOff(
       yearGuess,
       currentQuestion[1],
       currentQuestion[2]
     );
 
-    setTotalScore(totalScore + points);
+    setTotalScore(totalScore + yearsOff);
+
     setFeedback(getDateFeedback(yearGuess, currentQuestion[1]));
     setSubmitted(true);
   }
@@ -115,7 +114,7 @@ function App() {
       <button onClick={handleNext}>Next</button>
     )}
     {submitted && <p>{feedback}</p>}
-    <p>Total Score: {totalScore}</p>
+    <p>Total Years Off: {totalScore}</p>
     </div>
   );
 }
