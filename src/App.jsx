@@ -43,12 +43,17 @@ const QUESTION_POOL = [
 ["Global financial crisis begins in the United States", 2008]
 ];
 
-
 function getRandomQuestions(pool, count) {
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
 
+const titleStyle = {
+  textAlign: "center",
+  marginBottom: "20px",
+  color: "#1e3a8a",
+  fontSize: "2.5rem"
+};
 
 const containerStyle = {
   maxWidth: "600px",
@@ -88,7 +93,7 @@ const buttonStyle = {
 const feedbackStyle = {
   marginTop: "12px",
   fontWeight: "bold",
-  color: "#dc2626" // red-ish for visibility
+  color: "#dc2626"
 };
 
 const scoreStyle = {
@@ -97,14 +102,10 @@ const scoreStyle = {
   fontSize: "1.1rem"
 };
 
-
-
 function calculateYearsOff(guess, answer) {
   const difference = Math.abs(guess - answer);
   return Math.min(difference, 100);
 }
-
-
 
 function getDateFeedback(guess, answer) {
   const difference = Math.abs(guess - answer);
@@ -119,7 +120,6 @@ function getDateFeedback(guess, answer) {
   }
 }
 
-
 function App() {
   const [questions] = useState(() => getRandomQuestions(QUESTION_POOL, 10));
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -129,6 +129,7 @@ function App() {
   const [feedback, setFeedback] = useState("");
 
   const inputRef = useRef(null);
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -150,7 +151,7 @@ function App() {
     const finalScoreStyle = {
       fontSize: "2rem",
       fontWeight: "bold",
-      color: totalScore === 0 ? "#16a34a" : "#dc2626", // green if perfect
+      color: totalScore === 0 ? "#16a34a" : "#dc2626",
       margin: "20px 0"
     };
 
@@ -168,14 +169,16 @@ function App() {
     else message = "Better luck next time!";
 
     return (
+      <>
+      <h1 style={titleStyle}>Accudate</h1>
       <div style={finalContainerStyle}>
       <h1>Quiz Finished</h1>
       <p style={finalScoreStyle}>{totalScore} total years off</p>
       <p style={messageStyle}>{message}</p>
       </div>
+      </>
     );
   }
-
 
   const currentQuestion = questions[currentIndex];
 
@@ -191,11 +194,9 @@ function App() {
     );
 
     setTotalScore(totalScore + yearsOff);
-
     setFeedback(getDateFeedback(yearGuess, currentQuestion[1]));
     setSubmitted(true);
   }
-
 
   function handleNext() {
     setGuess("");
@@ -204,8 +205,10 @@ function App() {
     setCurrentIndex(currentIndex + 1);
   }
 
-
   return (
+    <>
+    <h1 style={titleStyle}>Accudate</h1>
+
     <div style={containerStyle}>
     <h2>Question {currentIndex + 1} / {questions.length}</h2>
     <p style={questionStyle}>{currentQuestion[0]}</p>
@@ -216,10 +219,8 @@ function App() {
     onChange={e => setGuess(e.target.value)}
     disabled={submitted}
     style={inputStyle}
-    autoFocus
     ref={inputRef}
     />
-
 
     {!submitted && (
       <button onClick={handleSubmit} style={buttonStyle}>Submit</button>
@@ -233,8 +234,8 @@ function App() {
 
     <p style={scoreStyle}>Total Years Off: {totalScore}</p>
     </div>
+    </>
   );
-
 }
 
 export default App;
